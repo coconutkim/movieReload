@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.0'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.recommend'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // compileOnly 'org.projectlombok:lombok'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    // runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'com.mysql:mysql-connector-j'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.4'
+     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
+//    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+//    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+//    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.7.18'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '3.4.0'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '3.3.4'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '5.6.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// .\gradlew clean build

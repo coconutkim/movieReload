@@ -1,0 +1,25 @@
+(base) PS D:\dev\movie> git config --global --add safe.directory D:/dev/movie
+
+
+깃허브에 폴더 올리기
+git init
+온점 띄어쓰기 주의하기
+git add .
+문자열일 경우 따옴표 붙여주기
+git commit -m
+git push origin main
+
+위의 과정이 순조롭게 진행이 안 될 경우 다음을 확인할 것
+git branch
+마스터에서 메인 브랜치로 바꾸기
+git branch -m master main
+
+어디로 clone이 될지 레포지토리의 주소 확인
+git remote -v
+
+git remote add origin 주소 url
+위 코드 둘 중 하나다
+
+
+그래들 프로젝트 캐시 삭제 후 재빌드
+./gradlew build --refresh-dependencies

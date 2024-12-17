@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>블로그 글</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="p-5 mb-5 text-center</> bg-light">
+  <h1 class="mb-3">My Blog</h1>
+  <h4 class="mb-3">블로그에 오신 것을 환영합니다.</h4>
+</div>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-8">
+      <article>
+        <input type="hidden" id="article-id" th:value="${article.id}">
+        <header class="mb-4">
+          <h1 class="fw-bolder mb-1" th:text="${article.title}"></h1>
+          <div class="text-muted fst-italic mb-2" th:text="|Posted on ${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')} By ${article.author}|"></div>
+        </header>
+        <section class="mb-5">
+          <p class="fs-5 mb-4" th:text="${article.content}"></p>
+        </section>
+        <button type="button" id="modify-btn"
+                th:onclick="|location.href='@{/new-article?id={articleId}(articleId=${article.id})}'|"
+                class="btn btn-primary btn-sm">수정</button>
+        <button type="button" id="delete-btn"
+                class="btn btn-secondary btn-sm">삭제</button>
+      </article>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // 삭제 기능
+  const deleteButton = document.getElementById('delete-btn');
+
+  if (deleteButton) {
+    deleteButton.addEventListener('click', event => {
+      let id = document.getElementById('article-id').value;
+      function success() {
+        alert('삭제가 완료되었습니다.');
+        location.replace('/articles');
+      }
+
+      function fail() {
+        alert('삭제 실패했습니다.');
+        location.replace('/articles');
+      }
+
+      httpRequest('DELETE',`/api/articles/${id}`, null, success, fail);
+    });
+  }
+
+  // 수정 기능
+  const modifyButton = document.getElementById('modify-btn');
+
+  if (modifyButton) {
+    modifyButton.addEventListener('click', event => {
+      let params = new URLSearchParams(location.search);
+      let id = params.get('id');
+
+      body = JSON.stringify({
+        title: document.getElementById('title').value,
+        content: document.getElementById('content').value
+      })
+
+      function success() {
+        alert('수정 완료되었습니다.');
+        location.replace(`/articles/${id}`);
+      }
+
+      function fail() {
+        alert('수정 실패했습니다.');
+        location.replace(`/articles/${id}`);
+      }
+
+      httpRequest('PUT',`/api/articles/${id}`, body, success, fail);
+    });
+  }
+
+  // 쿠키를 가져오는 함수
+  function getCookie(key) {
+    var result = null;
+    var cookie = document.cookie.split(';');
+    cookie.some(function (item) {
+      item = item.replace(' ', '');
+
+      var dic = item.split('=');
+
+      if (key === dic[0]) {
+        result = dic[1];
+        return true;
+      }
+    });
+
+    return result;
+  }
+
+  // HTTP 요청을 보내는 함수
+  function httpRequest(method, url, body, success, fail) {
+    fetch(url, {
+      method: method,
+      headers: { // 로컬 스토리지에서 액세스 토큰 값을 가져와 헤더에 추가
+        Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    }).then(response => {
+      if (response.status === 200 || response.status === 201) {
+        return success();
+      }
+      const refresh_token = getCookie('refresh_token');
+      if (response.status === 401 && refresh_token) {
+        fetch('/api/token', {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            refreshToken: getCookie('refresh_token'),
+          }),
+        })
+                .then(res => {
+                  if (res.ok) {
+                    return res.json();
+                  }
+                })
+                .then(result => { // 재발급이 성공하면 로컬 스토리지값을 새로운 액세스 토큰으로 교체
+                  localStorage.setItem('access_token', result.accessToken);
+                  httpRequest(method, url, body, success, fail);
+                })
+                .catch(error => fail());
+      } else {
+        return fail();
+      }
+    });
+  }
+</script>
+</body>
+</html>
