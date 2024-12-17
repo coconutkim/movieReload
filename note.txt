@@ -18,8 +18,15 @@ git branch -m master main
 git remote -v
 
 git remote add origin 주소 url
-위 코드 둘 중 하나다
 
 
 그래들 프로젝트 캐시 삭제 후 재빌드
 ./gradlew build --refresh-dependencies
+
+
+mysql에 데이터베이스 생성
+C:\Users\chaey>mysql -u root -p
+위의 명령어가 통하지 않으면 path에 mysql이 등록되지 않아서다
+
+...비번을 잊어버리면 답이 없다
+그냥 삭제하고 다시 설치해서 비번을 잘 기억해둔다..
