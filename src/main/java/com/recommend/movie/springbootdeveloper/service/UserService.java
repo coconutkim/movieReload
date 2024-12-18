@@ -22,6 +22,7 @@ public class UserService {
                 .build()).getId();
     }
 
+    //전달받은 아이디로 유저를 검색
     public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));

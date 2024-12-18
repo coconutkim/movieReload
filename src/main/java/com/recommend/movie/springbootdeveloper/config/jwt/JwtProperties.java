@@ -15,3 +15,5 @@ public class JwtProperties {
     private String secretKey;
 }
 
+//properties에서 설정한 issuer, secretkey 값이 매핑된다
+

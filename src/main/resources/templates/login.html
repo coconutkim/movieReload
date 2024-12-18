@@ -20,7 +20,7 @@
         <p class="text-white-50 mt-2 mb-5">서비스를 사용하려면 로그인을 해주세요!</p>
 
         <div class = "mb-2">
-          <form action="/login" method="GET">
+          <form action="/login" method="POST">
             <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
             <div class="mb-3">
               <label class="form-label text-white">Email address</label>
@@ -39,5 +39,52 @@
     </div>
   </div>
 </section>
+<script>
+  // 쿠키를 가져오는 함수
+  function getCookie(key) {
+    var result = null;
+    var cookie = document.cookie.split(';');
+    cookie.some(function (item) {
+      item = item.replace(' ', '');
+
+      var dic = item.split('=');
+
+      if (key === dic[0]) {
+        result = dic[1];
+        return true;
+      }
+    });
+
+    return result;
+  }
+
+  fetch('/api/token', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    redirect: 'manual', // 리다이렉트를 자동으로 따르지 않도록 설정
+  })
+          .then(response => {
+            if (response.status === 200) {
+              return response.json();
+            } else if (response.status === 302) {
+              // 리다이렉트 응답을 받았을 경우 처리 (예: 로그인 페이지로 리다이렉트)
+              window.location.href = response.headers.get('Location');
+            } else {
+              throw new Error('Unexpected response');
+            }
+          })
+          .then(data => {
+            // JSON 데이터 처리
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+
+
+</script>
 </body>
 </html>

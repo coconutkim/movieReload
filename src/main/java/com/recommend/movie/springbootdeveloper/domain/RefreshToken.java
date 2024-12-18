@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 public class RefreshToken {
+//데이터베이스에 저장하는 정보
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

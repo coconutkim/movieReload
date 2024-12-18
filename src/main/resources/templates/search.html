@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<form id="searchForm">
+    <input class="form-control" name="keyword">
+    <div class="input-group-append" id="button-addon4">
+        <button class="btn btn-outline-secondary btn-search" type="button">Search</button>
+        <button class="btn btn-outline-secondary btn-clear" type="button">Clear</button>
+    </div>
+</form>
+<script>
+    $('.btn-clear').click(function (e) {
+        searchForm.empty().submit();
+    });
+</script>
+</body>
+</html>
