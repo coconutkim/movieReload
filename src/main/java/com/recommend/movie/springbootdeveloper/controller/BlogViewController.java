@@ -51,4 +51,9 @@ public class BlogViewController {
 
         return "newArticle";
     }
+
+    @GetMapping("/search")
+    public String search() {
+        return "search";
+    }
 }

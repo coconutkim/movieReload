@@ -1,16 +1,69 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search and Display</title>
+</head>
 <body>
 <form id="searchForm">
-    <input class="form-control" name="keyword">
+    <input class="form-control" name="keyword" id="keyword" placeholder="Enter your query">
     <div class="input-group-append" id="button-addon4">
         <button class="btn btn-outline-secondary btn-search" type="button">Search</button>
         <button class="btn btn-outline-secondary btn-clear" type="button">Clear</button>
     </div>
 </form>
+
+<!-- Results and URL will be displayed here -->
+<div id="results" style="margin-top: 20px;"></div>
+<div id="url-display" style="margin-top: 10px; color: blue;"></div>
+
 <script>
-    $('.btn-clear').click(function (e) {
-        searchForm.empty().submit();
+    document.querySelector('.btn-search').addEventListener('click', async function () {
+        const keyword = document.getElementById('keyword').value.trim();
+
+        // If no input, alert the user and exit
+        if (!keyword) {
+            alert("Please enter a keyword.");
+            return;
+        }
+
+        // Construct the URL
+        const url = `http://sixtick.duckdns.org:19821/llm?role=사용자가 작성한 문장에서 키워드 뽑아줘&query=${encodeURIComponent(keyword)}`;
+
+        // Display the URL on the page
+        document.getElementById('url-display').innerHTML = `<strong>Accessed URL:</strong> <a href="${url}" target="_blank">${url}</a>`;
+
+        try {
+            // Fetch the data from the API
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch the data. Please try again.");
+            }
+
+            // Parse the response as text (HTML)
+            const responseText = await response.text();
+
+            // Create a temporary DOM to parse the HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(responseText, 'text/html');
+
+            // Extract the <pre> tag content inside <body>
+            const preContent = doc.querySelector('pre')?.innerText || "No <pre> tag found inside body.";
+
+            // Display the extracted content
+            document.getElementById('results').innerHTML = `<strong>Content inside <pre>:</strong><br>${preContent}`;
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            document.getElementById('results').innerHTML = `<span style="color: red;">Error: ${error.message}</span>`;
+        }
+    });
+
+    document.querySelector('.btn-clear').addEventListener('click', function () {
+        document.getElementById('keyword').value = ''; // Clear the input field
+        document.getElementById('results').innerHTML = ''; // Clear the results
+        document.getElementById('url-display').innerHTML = ''; // Clear the URL display
     });
 </script>
 </body>
